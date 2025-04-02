@@ -68,3 +68,22 @@ if __name__ == "__main__":
         n_results=3
     )
     [all_passages] = result["documents"]
+
+    # Generate Prompt
+    query_oneline = query.replace("\n", " ")
+    prompt = f"""You are a helpful and informative bot that answers questions using text from the reference passage included below. 
+Be sure to respond in a complete sentence, being comprehensive, including all relevant background information. 
+However, you are talking to a non-technical audience, so be sure to break down complicated concepts and 
+strike a friendly and converstional tone. If the passage is irrelevant to the answer, you may ignore it.
+
+QUESTION: {query_oneline}
+"""
+    for passage in all_passages:
+        passage_oneline = passage.replace("\n", " ")
+        prompt += f"\n{passage_oneline}"
+
+    answer = client.models.generate_content(
+        model="gemini-2.0-flash",
+        contents=prompt
+    )
+    print(answer.text)
